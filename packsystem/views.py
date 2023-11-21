@@ -1,5 +1,6 @@
 
 from django.shortcuts import render, redirect
+from django.http import HttpResponseRedirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .forms import SignUpForm
@@ -25,15 +26,13 @@ def login_user(request):
         user = authenticate(request, username=username, password=password)
         if user is not None: 
             print(f"the user is {user}")
-    #         login(request, user)
-    #         # specify in brackets below the page that should be loaded after successful login
-    #         print(user)
-    #         # return redirect('')
+            login(request, user)
+            messages.success(request, "Successfully logged in")
+            return HttpResponseRedirect('')
         else:
-            messages.success(request, ("There was an error logging in, please try again...."))
-    #         return redirect('login')
-    # else:
-    return render(request, 'packsystem/login.html',{})
+            messages.error(request, ("There was an error logging in, please try again...."))
+    else: 
+        return render(request, 'packsystem/login.html',{})
 
 def logout_user(request):
     logout(request)

@@ -1,33 +1,41 @@
 {% extends 'base.html' %}
 {% block title %}Login{% endblock%}
 
-{% block page_content %}
-<main>
-    <div>
-        <div class="login-form">
-            <div class="login-welcome">
-              {% load static %}
-              <a href="" class=""
-                ><img
-                  src="{% static 'images/logo.png' %}"
-                  width="80px"
-                  alt="RENU Logo"
-              /></a>
-              <p>Welcome</p>
-            </div>
+{% block content %}
+<main class="login-container">
+    <div class="login-welcome">
+        {% load static %}
+        <a href="" class=""
+        ><img
+            src="{% static 'images/logo.png' %}"
+            width="80px"
+            alt="RENU Logo"
+        /></a>
+        <p>Welcome</p>
     </div>
     
-    <div class="login">
-        <form method= POST>
-            {% csrf_token %}
-            <input type="text" name="username" class="form-input" placeholder="Input your Username here">
-            <br>
-            <input type="password" name="password" class="form-input" placeholder="Input your Password here">
-            <br>
-            <input type="submit" value="Login" class="login-btn">
+    <form method= POST>
+        {% csrf_token %}
+        <div class="input-fields">
+            <label for="">Username</label>
+            <div>
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Username"
+                name="username"
+                minlength="3"
+                required
+              />
+            </div>
+          </div>
+        <input type="text" name="username" class="form-input" placeholder="Input your Username here">
+        <br>
+        <input type="password" name="password" class="form-input" placeholder="Input your Password here">
+        <br>
+        <input type="submit" value="Login" class="login-btn">
 
-            <p>Don't have an account?<a href="{% url 'accounts:signup' %}">Register</a> </p>
-        </form>
-    </div>
+        <p>Don't have an account?<a href="{% url 'accounts:signup' %}">Register</a> </p>
+    </form>
 </main>
 {% endblock %}

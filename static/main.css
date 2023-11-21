@@ -11,7 +11,7 @@
     margin-top: -10px;
 }
 .body{
-    background: url("/static/background/web-body.jpg");
+    /* background: url("/static/background/web-body.jpg"); */
     background-size:cover;
     background-blend-mode: multiply;
 }

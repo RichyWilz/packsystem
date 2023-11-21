@@ -1,0 +1,52 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <link rel="icon" type="image/x-icon" href="{% static 'images/logo.png' %}">
+        <link rel="stylesheet" href="{% static 'css/base.css' %}">
+        <title>
+            {% block title %}
+            {% endblock%} - Order Tracking system
+        </title>
+    </head>
+    <body>
+        {% if messages %}
+            <ul class="messages" id="msg">
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}><img class="toast-icons" src="{% static 'icons/'|add:message.tags|add:'.png' %}" />{{ message }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+        {% if request.user.is_authenticated %}
+        <nav>
+            <!-- <div class="logo-menu">
+            <ul class="menu">
+                {% if user.is_superuser %}
+                {% endif %}
+            </ul>
+            </div>
+            
+            <div class="profile">
+                <p class = "user-details">{{ request.user.username|upper }} </p>
+            </div>
+            
+            <button class="menu-icon" id="hamburger">&#9776;</button>
+            <ul class="mobile-menu" id="menu-links">
+                {% if user.is_superuser %}
+                {% endif %}
+                <div class="mobile-profile">
+                    <p class = "user-details">{{ request.user.username|upper }} </p>
+                </div>
+              </ul> -->
+        </nav>
+        {% endif %}
+        <div>
+            {% block page_content %}
+            {% endblock%}
+        </div>
+        <script src=" {% static 'js\script.js' %} "></script>
+    </body>
+</html>

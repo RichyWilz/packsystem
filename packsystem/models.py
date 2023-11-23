@@ -7,3 +7,15 @@ class PackageSystemUser(models.Model):
 
     def __str__(self):
         return str(self.user)
+
+class Order(models.Model):
+    orderId = models.CharField(max_length=50, unique=True)
+    name = models.CharField(max_length=100)
+    client = models.CharField(max_length=100)
+    receiver = models.CharField(max_length=100)
+    delivery_date = models.DateField()
+    status = models.CharField(max_length=20)
+
+    def __str__(self):
+        return self.name
+

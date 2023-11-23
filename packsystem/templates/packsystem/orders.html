@@ -5,8 +5,99 @@
 <main  class="content">
     <h2>Orders</h2>
 
-    <p>your are a.....</p>
+    <div class="search">
+        <form method="post" id="myForm">
+          {% csrf_token %}
+          <input
+            type="text"
+            placeholder="Search for order"
+            name=""
+            id="search_element"
+          />
+        </form>
+        <button class="btn" id="add_order_btn">Add Order</button>
+      </div>
+
+      <div id="overlay">
+        <form action="{% url 'add_order' %}" method="post" id="add_user_form">
+          {% csrf_token %}
+          <h2>Add Order</h2>
+    
+          <div class="input-fields-user">
+            <label for="username">Username</label>
+            <input
+              type="text"
+              name="username"
+              id="username"
+              placeholder="Enter username"
+              required
+            />
+          </div>
+          <div class="input-fields-user">
+            <label for="password1">Password</label>
+            <input
+              type="password"
+              name="password1"
+              id="password1"
+              placeholder="Set password"
+              required
+            />
+          </div>
+          <div class="input-fields-user">
+            <label for="password2">Confirm Password</label>
+            <input
+              type="password"
+              name="password2"
+              id="password2"
+              placeholder="Confirm password"
+              required
+            />
+          </div>
+    
+          <div class="btn_group">
+            <button type="button" class="btn cancel" id="cancel_btn">Cancel</button>
+            <button type="submit" class="btn add">Add</button>
+          </div>
+        </form>
+      </div>
+
+
+    <table class="auto-group-p2pf-Vw7" id="ipTable">
+        <thead class="frame-11-N7j">
+          <tr>
+            <th class="column-3Um">Order ID</th>
+            <th class="column-2Lh">Order Name</th>
+            <th class="column-2Lh">Client</th>
+            <th class="column-2Lh">Receiver</th>
+            <th class="column-3Um">Delivery Date</th>
+            <th class="column-2Lh">Status</th>
+            <th class="column-2Lh">Actions</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
   
 
 </main>
+
+<script data-users=" {{ orders }}">
+    const data = document.currentScript.dataset;
+    console.log(data)
+    const orders = JSON.parse(data.orders);
+
+    console.log("these are the orders: ", orders)
+
+    document.addEventListener("DOMContentLoaded", function () {
+        cancelBtn = document.getElementById("cancel_btn");
+        addOrderBtn = document.getElementById("add_order_btn");
+        const overlay = document.getElementById("overlay");
+        // const editOverlay = document.getElementById("overlay-edit")
+
+        addOrderBtn.addEventListener("click", function (event) {
+            console.log('you clicked me')
+            overlay.style.display = "flex";
+        });
+    })
+
+</script>
 {% endblock %}

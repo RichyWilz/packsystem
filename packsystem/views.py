@@ -11,7 +11,7 @@ from packsystem.utils.custom_decorators import custom_admin_only, custom_authori
 from .models import Order
 import json
 from django.contrib.auth.models import User
-from .forms import AddUserForm
+from .forms import AddUserForm, AddOrderForm
 from uuid import UUID
 from django.core.serializers.json import DjangoJSONEncoder
 
@@ -32,7 +32,6 @@ def orders(request):
     orders = Order.objects.all()
     data = {'orders': list(orders.values())}
     json_data = json.dumps(data, cls=DjangoJSONEncoder)
-    print(json_data)
 
     context = {
         "orders": json_data,
@@ -42,18 +41,29 @@ def orders(request):
 
 @custom_authorised_user
 def add_order(request):
-    # if request.method == 'POST':
-    #     form = AddOrderForm(request.POST)
-    #     # if form.is_valid():
-    #     #     order = form.save(commit=False)
-    #     #     order.save()
-    #     #     messages.success(request, "Successfully added user")
-    #     #     return HttpResponseRedirect('/orders')
-    # else:
-    #     # form = AddOrderForm()
+    orders = Order.objects.all()
+    data = {'orders': list(orders.values())}
+    json_data = json.dumps(data, cls=DjangoJSONEncoder)
 
-    # return render(request, 'your_template.html', {'form': form})
-    return render(request, 'packsystem/orders.html', {})
+    context = {
+        "orders": json_data,
+        "section": "orders"
+    }
+    
+    if request.method == 'POST':
+        form = AddOrderForm(request.POST)
+        print(form)
+        if form.is_valid():
+            order = form.save(commit=False)
+            order.save()
+            messages.success(request, "Successfully added orders")
+            return HttpResponseRedirect('/')
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                        messages.error(request, f"{error} {field}")
+    form = AddOrderForm()
+    return render(request, 'packsystem/orders.html', context)
 
 @custom_authorised_user
 def edit_order(request):
@@ -87,7 +97,6 @@ def clients(request):
     users = User.objects.all()
     usernames_list = [{"id": user.id, "username": user.username, "access_level": user.is_superuser} for user in users]
     data = {"users": usernames_list}
-    print(data)
     context = {
          "users": json.dumps(data),
          "section": "users"
@@ -96,7 +105,15 @@ def clients(request):
 
 @custom_authorised_user
 def activity(request):
-    return render(request, 'packsystem/activity.html', {})
+    orders = Order.objects.all()
+    data = {'orders': list(orders.values())}
+    json_data = json.dumps(data, cls=DjangoJSONEncoder)
+
+    context = {
+        "orders": json_data,
+        "section": "orders"
+    }
+    return render(request, 'packsystem/activity.html', context)
 
 class SignUpView(generic.CreateView):
     form_class = SignUpForm

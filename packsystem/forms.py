@@ -3,6 +3,7 @@ from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
+from .models import Order
 
 
 
@@ -45,18 +46,21 @@ class AddUserForm(UserCreationForm):
         fields = ('username', 'password1', 'password2')
 
 
-# class AddOrderForm(forms.ModelForm):
-#     class Meta:
-#         model = Order
-#         fields = ['name', 'client', 'receiver', 'delivery_date', 'status']
+class AddOrderForm(forms.ModelForm):
+    class Meta:
+        model = Order
+        fields = ['name', 'client', 'receiver', 'status']
 
-    # def __init__(self, *args, **kwargs):
-    #     super(AddOrderForm, self).__init__(*args, **kwargs)
-    #     self.fields['delivery_date'].widget = forms.DateInput(attrs={'type': 'date'})
+    def __init__(self, *args, **kwargs):
+        super(AddOrderForm, self).__init__(*args, **kwargs)
+    
+        # Check if 'delivery_date' is in the form's fields
+        if 'delivery_date' in self.fields:
+            self.fields['delivery_date'].widget = forms.DateInput(attrs={'type': 'date'})
 
-    # def clean_delivery_date(self):
-    #     # Convert the delivery_date to a string before passing it to the JSON encoder
-    #     return str(self.cleaned_data['delivery_date'])
+        def clean_delivery_date(self):
+            # Convert the delivery_date to a string before passing it to the JSON encoder
+            return str(self.cleaned_data['delivery_date'])
 
 # class AddOrderForm(UserCreationForm):
 #     username = forms.CharField(required=True, min_length=3, widget=forms.TextInput(attrs={'placeholder': 'Enter your username'})) 

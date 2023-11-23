@@ -1,10 +1,205 @@
-{% extends 'base.html' %}
-{% block title %}My Activity{% endblock%}
-{% block content %}
+{% extends "base.html" %} 
+{% block title %}Orders{% endblock %} {% load static %}
+{% block extra_css %}
+<link
+  type="text/css"
+  href="{% static 'css\user-management.css' %}"
+  rel="stylesheet"
+/>
+{% endblock %} {% block content%}
 
-<main  class="content"> 
-    <h2>Welcome to the Package Tracking System</h2>
+<div id="content">
+    <h2>My Orders</h2>
+
+    <div class="search">
+        <form method="post" action="{% url 'add_order' %}" id="myForm">
+          {% csrf_token %}
+          <input
+            type="text"
+            placeholder="Search for order"
+            name=""
+            id="search_element"
+          />
+        </form>
+        <button class="btn" id="add_order_btn">Add Order</button>
+      </div>
+
+      <div id="overlay">
+        <form action="{% url 'add_order' %}" method="post" id="add_user_form">
+          {% csrf_token %}
+          <h2>Add Order</h2>
+    
+          <div class="input-fields-user">
+            <label for="name">Name</label>
+            <input
+              type="text"
+              name="name"
+              id="name"
+              placeholder="Enter name"
+              required
+            />
+          </div>
+          <div class="input-fields-user">
+            <label for="name">Client</label>
+            <input
+              type="text"
+              name="client"
+              id="client"
+              placeholder="Enter client"
+              required
+            />
+          </div>
+          <div class="input-fields-user">
+            <label for="name">Receiver</label>
+            <input
+              type="text"
+              name="receiver"
+              id="receiver"
+              placeholder="Enter receiver"
+              required
+            />
+          </div>
+          <div class="input-fields-user">
+            <label for="status">Status</label>
+            <input
+              type="text"
+              name="status"
+              id="status"
+              placeholder="Enter status"
+              required
+            />
+          </div>
+    
+          <div class="btn_group">
+            <button type="button" class="btn cancel" id="cancel_btn">Cancel</button>
+            <button type="submit" class="btn add">Add</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="result" id="noDataMessage">
+        <p>No Order</p>
+      </div>
+
+
+    <table class="auto-group-p2pf-Vw7" id="ipTable">
+        <thead class="frame-11-N7j">
+          <tr>
+            <th class="column-3Um">ID</th>
+            <th class="column-2Lh">Product Name</th>
+            <th class="column-2Lh">Client</th>
+            <th class="column-2Lh">Receiver</th>
+            <th class="column-3Um">Delivery Date</th>
+            <th class="column-2Lh">Status</th>
+            <th class="column-2Lh">Actions</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
   
 
-</main>
+    </div>
+
+<script data-users=" {{ orders }}">
+    const data = document.currentScript.dataset;
+    // const orders = JSON.parse(data.orders);
+    const firstData = JSON.parse(data.users)
+    const order1 = firstData && firstData.orders
+
+    const orders = [order1[0]]
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const searchElement = document.getElementById("search_element");
+        const formElement = document.getElementById("myForm");
+        const ipTable = document.getElementById("ipTable");
+        const ipTableBody = document
+          .getElementById("ipTable")
+          .querySelector("tbody");
+        const noDataMessage = document.getElementById("noDataMessage");
+        let filteredUsers = orders;
+        cancelBtn = document.getElementById("cancel_btn");
+        addOrderBtn = document.getElementById("add_order_btn");
+        const overlay = document.getElementById("overlay");
+        const editOverlay = document.getElementById("overlay-edit")
+
+        addOrderBtn.addEventListener("click", function (event) {
+            overlay.style.display = "flex";
+        });
+
+        cancelBtn.addEventListener("click", function (event) {
+          overlay.style.display = "none";
+          editOverlay.style.display = "none";
+        });
+
+
+      const updateTable = (searchBy) => {
+      if (searchBy) {
+        filteredUsers = orders.filter(
+          (user) =>
+            user.name &&
+            user.name.toLowerCase().indexOf(searchBy.toLowerCase()) > -1
+        );
+      } else {
+        filteredUsers = orders;
+      }
+      
+      ipTableBody.innerHTML = "";
+
+
+      if (filteredUsers.length > 0) {
+        noDataMessage.style.display = "none";
+        ipTable.style.display = "table";
+        filteredUsers.forEach((entry) => {
+          const row = document.createElement("tr");
+
+
+          const idCell = document.createElement("td");
+          idCell.textContent = "#" + entry.id;
+
+
+          const nameCell = document.createElement("td");
+          nameCell.textContent = entry.name;
+  
+          const clientCell = document.createElement("td");
+          clientCell.textContent = entry.client;
+
+          const receiverCell = document.createElement("td");
+          receiverCell.textContent = entry.receiver;
+
+          const dateCell = document.createElement("td");
+          dateCell.textContent = entry.delivery_date;
+
+          const statusCell = document.createElement("td");
+          statusCell.textContent = entry.status;
+
+          const actionCell = document.createElement("td");
+          actionCell.classList.add("btn-space")
+
+          
+
+          row.appendChild(idCell);
+          row.appendChild(nameCell);
+          row.appendChild(clientCell);
+          row.appendChild(receiverCell);
+          row.appendChild(dateCell);
+          row.appendChild(statusCell);
+          row.append(actionCell)
+          ipTableBody.appendChild(row);
+        });
+      } else {
+        noDataMessage.style.display = "block";
+        ipTable.style.display = "none";
+      }
+    };
+
+    // Call updateTable with an empty string to display all users initially
+      updateTable("");
+
+      searchElement.addEventListener("input", function (event) {
+        event.preventDefault();
+        updateTable(event.target.value);
+      });
+    })
+
+</script>
 {% endblock %}

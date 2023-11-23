@@ -12,7 +12,7 @@
     <h2>Orders</h2>
 
     <div class="search">
-        <form method="post" id="myForm">
+        <form method="post" action="{% url 'add_order' %}" id="myForm">
           {% csrf_token %}
           <input
             type="text"
@@ -60,16 +60,6 @@
             />
           </div>
           <div class="input-fields-user">
-            <label for="delivery_date">Delivery date</label>
-            <input
-              type="text"
-              name="delivery_date"
-              id="delivery_date"
-              placeholder="Enter delivery_date"
-              required
-            />
-          </div>
-          <div class="input-fields-user">
             <label for="status">Status</label>
             <input
               type="text"
@@ -95,8 +85,8 @@
     <table class="auto-group-p2pf-Vw7" id="ipTable">
         <thead class="frame-11-N7j">
           <tr>
-            <th class="column-3Um">Order ID</th>
-            <th class="column-2Lh">Order Name</th>
+            <th class="column-3Um">ID</th>
+            <th class="column-2Lh">Product Name</th>
             <th class="column-2Lh">Client</th>
             <th class="column-2Lh">Receiver</th>
             <th class="column-3Um">Delivery Date</th>
@@ -165,7 +155,7 @@
 
 
           const idCell = document.createElement("td");
-          idCell.textContent = entry.orderId;
+          idCell.textContent = "#" + entry.id;
 
 
           const nameCell = document.createElement("td");

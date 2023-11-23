@@ -1,10 +1,206 @@
-{% extends 'base.html' %}
-{% block title %}Clients{% endblock%}
-{% block content %}
 
-<main  class="content">
-    <h2>Clients</h2>
+
+{% extends "base.html" %} 
+{% block title %}Clients{% endblock %} {% load static %}
+{% block extra_css %}
+<link
+  type="text/css"
+  href="{% static 'css\user-management.css' %}"
+  rel="stylesheet"
+/>
+{% endblock %} {% block content%}
+<div id="content">
+  <h2>Client Management</h2>
+
+  <div class="search">
+    <form method="post" id="myForm">
+      {% csrf_token %}
+      <input
+        type="text"
+        placeholder="Search for user"
+        name=""
+        id="search_element"
+      />
+    </form>
+    <button class="btn" id="add_user_btn">Add Client</button>
+  </div>
+
+  <div id="overlay-edit">
+    <form action="{% url 'edit_order' 0 %}" method="post" id="editForm">
+    <form method="post" id="editForm">
+      {% csrf_token %}
+      <h2>Edit Client</h2>
+      <div class="input-fields-user">
+        <label for="username">Username</label>
+        <input
+          type="text"
+          name="username"
+          id="username"
+          placeholder="username"
+          required
+        />
+      </div>
+      <div class="input-fields-user">
+        <label for="access_level">Access Level</label>
+        <input
+          type="text"
+          name="access_level"
+          id="access_level"
+          placeholder="access level"
+        />
+      </div>
+
+      <div class="btn_group">
+        <button type="button" class="btn cancel" id="cancel_btn">Cancel</button>
+        <button type="submit" class="btn add">Edit</button>
+      </div>
+    </form>
+  </div>
+
+  <div id="overlay">
+    <form action="{% url 'add_user' %}" method="post" id="add_user_form">
+      {% csrf_token %}
+      <h2>Add Client</h2>
+
+      <div class="input-fields-user">
+        <label for="username">Username</label>
+        <input
+          type="text"
+          name="username"
+          id="username"
+          placeholder="Enter username"
+          required
+        />
+      </div>
+      <div class="input-fields-user">
+        <label for="password1">Password</label>
+        <input
+          type="password"
+          name="password1"
+          id="password1"
+          placeholder="Set password"
+          required
+        />
+      </div>
+      <div class="input-fields-user">
+        <label for="password2">Confirm Password</label>
+        <input
+          type="password"
+          name="password2"
+          id="password2"
+          placeholder="Confirm password"
+          required
+        />
+      </div>
+
+      <div class="btn_group">
+        <button type="button" class="btn cancel" id="cancel_btn">Cancel</button>
+        <button type="submit" class="btn add">Add</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="result" id="noDataMessage">
+    <p>No Clients</p>
+  </div>
+
+  <table class="auto-group-p2pf-Vw7" id="ipTable">
+    <thead class="frame-11-N7j">
+      <tr>
+        <th class="column-3Um">Name</th>
+        <th class="column-2Lh">Access Levels</th>
+        <th class="column-2Lh">Actions</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
+
+<!-- Add the JavaScript to handle the change event -->
+<script data-users=" {{ users }}">
+  const data = document.currentScript.dataset;
+  const users = JSON.parse(data.users);
+
+  console.log("round here")
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const searchElement = document.getElementById("search_element");
+    const formElement = document.getElementById("myForm");
+    const ipTable = document.getElementById("ipTable");
+    const ipTableBody = document
+      .getElementById("ipTable")
+      .querySelector("tbody");
+    const noDataMessage = document.getElementById("noDataMessage");
+    let filteredUsers = users.users;
+    cancelBtn = document.getElementById("cancel_btn");
+    addUserBtn = document.getElementById("add_user_btn");
+    const overlay = document.getElementById("overlay");
+    const editOverlay = document.getElementById("overlay-edit")
+
+    addUserBtn.addEventListener("click", function (event) {
+      overlay.style.display = "flex";
+    });
+
+    cancelBtn.addEventListener("click", function (event) {
+      overlay.style.display = "none";
+      editOverlay.style.display = "none";
+    });
+
+    const updateTable = (searchBy) => {
+      if (searchBy) {
+        filteredUsers = users.users.filter(
+          (user) =>
+            user.username &&
+            user.username.toLowerCase().indexOf(searchBy.toLowerCase()) > -1
+        );
+      } else {
+        filteredUsers = users.users;
+      }
+
+      ipTableBody.innerHTML = "";
+
+      if (filteredUsers.length > 0) {
+        noDataMessage.style.display = "none";
+        ipTable.style.display = "table";
+        filteredUsers.forEach((entry) => {
+          const row = document.createElement("tr");
+          const nameCell = document.createElement("td");
+          nameCell.textContent = entry.username;
   
+          const roleCell = document.createElement("td");
+          roleCell.textContent = entry.access_level ? "admin" : "user";
 
-</main>
+          const actionCell = document.createElement("td");
+          actionCell.classList.add("btn-space")
+
+          // edit button
+          const editButton = document.createElement("a");
+          editButton.classList.add("btn-icons"); // Add a class to the button
+          const editIcon = document.createElement("img");
+          editIcon.src = "{% static 'icons/edit.svg' %}"; // Replace with actual path
+          editButton.appendChild(editIcon);
+          editButton.href = `/cp1/auth/user/${entry.id}/change/`
+
+          actionCell.appendChild(editButton)
+
+          row.appendChild(nameCell);
+          row.appendChild(roleCell);
+          row.append(actionCell)
+          ipTableBody.appendChild(row);
+        });
+      } else {
+        noDataMessage.style.display = "block";
+        ipTable.style.display = "none";
+      }
+    };
+
+    // Call updateTable with an empty string to display all users initially
+    updateTable("");
+
+    searchElement.addEventListener("input", function (event) {
+      event.preventDefault();
+      updateTable(event.target.value);
+    });
+  });
+</script>
 {% endblock %}

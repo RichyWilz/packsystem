@@ -1,8 +1,14 @@
-{% extends 'base.html' %}
-{% block title %}Orders{% endblock%}
-{% block content %}
+{% extends "base.html" %} 
+{% block title %}Orders{% endblock %} {% load static %}
+{% block extra_css %}
+<link
+  type="text/css"
+  href="{% static 'css\user-management.css' %}"
+  rel="stylesheet"
+/>
+{% endblock %} {% block content%}
 
-<main  class="content">
+<div id="content">
     <h2>Orders</h2>
 
     <div class="search">
@@ -24,32 +30,52 @@
           <h2>Add Order</h2>
     
           <div class="input-fields-user">
-            <label for="username">Username</label>
+            <label for="name">Name</label>
             <input
               type="text"
-              name="username"
-              id="username"
-              placeholder="Enter username"
+              name="name"
+              id="name"
+              placeholder="Enter name"
               required
             />
           </div>
           <div class="input-fields-user">
-            <label for="password1">Password</label>
+            <label for="name">Client</label>
             <input
-              type="password"
-              name="password1"
-              id="password1"
-              placeholder="Set password"
+              type="text"
+              name="client"
+              id="client"
+              placeholder="Enter client"
               required
             />
           </div>
           <div class="input-fields-user">
-            <label for="password2">Confirm Password</label>
+            <label for="name">Receiver</label>
             <input
-              type="password"
-              name="password2"
-              id="password2"
-              placeholder="Confirm password"
+              type="text"
+              name="receiver"
+              id="receiver"
+              placeholder="Enter receiver"
+              required
+            />
+          </div>
+          <div class="input-fields-user">
+            <label for="delivery_date">Delivery date</label>
+            <input
+              type="text"
+              name="delivery_date"
+              id="delivery_date"
+              placeholder="Enter delivery_date"
+              required
+            />
+          </div>
+          <div class="input-fields-user">
+            <label for="status">Status</label>
+            <input
+              type="text"
+              name="status"
+              id="status"
+              placeholder="Enter status"
               required
             />
           </div>
@@ -59,6 +85,10 @@
             <button type="submit" class="btn add">Add</button>
           </div>
         </form>
+      </div>
+
+      <div class="result" id="noDataMessage">
+        <p>No Order</p>
       </div>
 
 
@@ -78,25 +108,108 @@
       </table>
   
 
-</main>
+    </div>
 
 <script data-users=" {{ orders }}">
     const data = document.currentScript.dataset;
-    console.log(data)
-    const orders = JSON.parse(data.orders);
+    // const orders = JSON.parse(data.orders);
+    const firstData = JSON.parse(data.users)
+    const orders = firstData && firstData.orders
 
     console.log("these are the orders: ", orders)
 
     document.addEventListener("DOMContentLoaded", function () {
+      const searchElement = document.getElementById("search_element");
+        const formElement = document.getElementById("myForm");
+        const ipTable = document.getElementById("ipTable");
+        const ipTableBody = document
+          .getElementById("ipTable")
+          .querySelector("tbody");
+        const noDataMessage = document.getElementById("noDataMessage");
+        let filteredUsers = orders;
         cancelBtn = document.getElementById("cancel_btn");
         addOrderBtn = document.getElementById("add_order_btn");
         const overlay = document.getElementById("overlay");
-        // const editOverlay = document.getElementById("overlay-edit")
+        const editOverlay = document.getElementById("overlay-edit")
 
         addOrderBtn.addEventListener("click", function (event) {
-            console.log('you clicked me')
             overlay.style.display = "flex";
         });
+
+        cancelBtn.addEventListener("click", function (event) {
+          overlay.style.display = "none";
+          editOverlay.style.display = "none";
+        });
+
+
+      const updateTable = (searchBy) => {
+      if (searchBy) {
+        filteredUsers = orders.filter(
+          (user) =>
+            user.name &&
+            user.name.toLowerCase().indexOf(searchBy.toLowerCase()) > -1
+        );
+      } else {
+        filteredUsers = orders;
+      }
+      
+      ipTableBody.innerHTML = "";
+
+      console.log("from here: ",filteredUsers)
+
+      if (filteredUsers.length > 0) {
+        noDataMessage.style.display = "none";
+        ipTable.style.display = "table";
+        filteredUsers.forEach((entry) => {
+          const row = document.createElement("tr");
+
+
+          const idCell = document.createElement("td");
+          idCell.textContent = entry.orderId;
+
+
+          const nameCell = document.createElement("td");
+          nameCell.textContent = entry.name;
+  
+          const clientCell = document.createElement("td");
+          clientCell.textContent = entry.client;
+
+          const receiverCell = document.createElement("td");
+          receiverCell.textContent = entry.receiver;
+
+          const dateCell = document.createElement("td");
+          dateCell.textContent = entry.delivery_date;
+
+          const statusCell = document.createElement("td");
+          statusCell.textContent = entry.status;
+
+          const actionCell = document.createElement("td");
+          actionCell.classList.add("btn-space")
+
+          
+
+          row.appendChild(idCell);
+          row.appendChild(nameCell);
+          row.appendChild(clientCell);
+          row.appendChild(receiverCell);
+          row.appendChild(dateCell);
+          row.appendChild(statusCell);
+          row.append(actionCell)
+          ipTableBody.appendChild(row);
+        });
+      } else {
+        noDataMessage.style.display = "block";
+        ipTable.style.display = "none";
+      }
+    };
+
+    // Call updateTable with an empty string to display all users initially
+      updateTable("");
+
+      searchElement.addEventListener("input", function (event) {
+        event.preventDefault();
+        updateTable(event.target.value);
+      });
     })
 
 </script>

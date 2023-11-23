@@ -566,9 +566,9 @@ ul.messages li a.choice {
 }
 
 .login-form {
-  width: 350px;
+  /* width: 350px; */
   overflow-x: hidden;
-  padding: 15px 0;
+  padding: 15px 20px;
 }
 
 .search {

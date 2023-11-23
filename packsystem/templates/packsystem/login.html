@@ -1,10 +1,22 @@
 {% extends 'base.html' %}
 {% block title %}Login{% endblock%}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/login.css' %}">
+{% endblock %}
 
 {% block content %}
 <main class="login-container">
-    <div class="login-welcome">
-        {% load static %}
+  <div class="login-design">
+
+    <div class="buttons">
+      <button class="text-lg">Login</button>
+      <button>Sign Up</button>
+    </div>
+
+    <div class="login-form">
+      <div class="login-welcome">
         <a href="" class=""
         ><img
             src="{% static 'images/logo.png' %}"
@@ -17,25 +29,43 @@
     <form method= POST>
         {% csrf_token %}
         <div class="input-fields">
-            <label for="">Username</label>
-            <div>
-              <input
-                type="text"
-                class="form-control"
-                placeholder="Username"
-                name="username"
-                minlength="3"
-                required
-              />
-            </div>
+          <label for="">Username</label>
+          <div>
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Username"
+              name="username"
+              minlength="3"
+              required
+            />
           </div>
-        <input type="text" name="username" class="form-input" placeholder="Input your Username here">
+        </div>
+        <div class="input-fields">
+          <label for="">Password</label>
+          <div>
+            <input
+              type="password"
+              class="form-control"
+              placeholder="Password"
+              name="password"
+              minlength="3"
+              required
+            />
+          </div>
+        </div>
+        <!-- <input type="text" name="username" class="form-input" placeholder="Input your Username here"> -->
         <br>
-        <input type="password" name="password" class="form-input" placeholder="Input your Password here">
+        <!-- <input type="password" name="password" class="form-input" placeholder="Input your Password here"> -->
         <br>
         <input type="submit" value="Login" class="login-btn">
 
-        <p>Don't have an account?<a href="{% url 'accounts:signup' %}">Register</a> </p>
+        <div class="register">
+          <p>Don't have an account?<a href="{% url 'signup' %}">Register</a> </p>
+        </div>
     </form>
+    </div>
+  </div>
+    
 </main>
 {% endblock %}

@@ -13,6 +13,18 @@ from packsystem.utils.custom_decorators import custom_admin_only, custom_authori
 def welcome(request):
     return render(request, 'packsystem/dashboard.html', {})
 
+@custom_authorised_user
+def orders(request):
+    return render(request, 'packsystem/orders.html', {})
+
+@custom_authorised_user
+def settings(request):
+    return render(request, 'packsystem/settings.html', {})
+
+@custom_authorised_user
+def clients(request):
+    return render(request, 'packsystem/clients.html', {})
+
 class SignUpView(generic.CreateView):
     form_class = SignUpForm
     template_name = 'signup.html'
@@ -28,7 +40,7 @@ def login_user(request):
             print(f"the user is {user}")
             login(request, user)
             messages.success(request, "Successfully logged in")
-            return HttpResponseRedirect('')
+            return HttpResponseRedirect('/')
         else:
             messages.error(request, ("There was an error logging in, please try again...."))
     else: 
@@ -37,7 +49,14 @@ def login_user(request):
 def logout_user(request):
     logout(request)
     messages.success(request, ("you logged out"))
-    return redirect("login")   
+    return redirect("login")  
+
+def display_message(message):
+    escaped_message = html.escape(message)
+    print("<script>alert('" + escaped_message + "');</script>")
+
+    message = input("Enter your message: ")
+    display_message(message) 
   
 
 

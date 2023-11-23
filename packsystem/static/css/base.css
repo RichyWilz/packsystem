@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 * {
     margin: 0;
     padding: 0;
@@ -35,14 +39,17 @@ nav ul.menu {
 }
 
 nav ul li a {
+    /* color: white; */
+    text-decoration: none;
+}
+
+nav ul li a:hover {
     color: white;
-  }
-  nav ul li a:hover {
+}
+  
+/* nav p {
     color: white;
-  }
-  nav p {
-    color: white;
-  }
+} */
 
 .logo-menu {
     display: flex;
@@ -71,16 +78,6 @@ nav ul li a {
   #content {
     padding: 0 120px;
   }
-
-.login-container{
-    background-color: #fff;
-    height: 100vh;
-    width: 100vw;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-}
 
 /*forms*/
 form {
@@ -155,6 +152,19 @@ ul.messages {
     gap: 8px;
     align-items: center;
   }
+
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 16px;
+}  
+
+
+.logout {
+  font-size: 14px;
+  cursor: pointer;
+}
 
   @keyframes slideInFromRight {
     0% {
@@ -253,4 +263,14 @@ ul.messages {
 }
 p{
     font-size: 20px;
+}
+
+.content {
+  background: white;
+  display: flex;
+  right: 0;
+  padding: 0 120px;
+  height: 60px;
+  align-items: center;
+  justify-content: space-between;
 }
